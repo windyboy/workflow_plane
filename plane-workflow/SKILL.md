@@ -1,127 +1,52 @@
 ---
 name: plane-workflow
-description: "Plane work item lifecycle with configurable profiles. Use for Plane, work item IDs (ABC-123), creating/starting work, plans, PRs, review, release, or closing work items. Profiles: minimal, standard, strict."
+description: "Lightweight Plane work-item workflow for personal projects. Use for Plane work items, planning, starting implementation, status updates, or marking work complete."
 ---
 
 # Plane Workflow
 
-Unified Plane work item lifecycle. Uses the host's Plane integration (MCP, API, or equivalent).
+A small, evidence-based workflow for one developer or a small project.
 
-## Five Invariants (non-negotiable)
+## Rules
 
-1. **Read-Before-Write** — Re-read before any status change
-2. **Write-Back Verification** — Read back after every write
-3. **Authorization** — No create/modify without user authorization
-4. **Team/Project Boundary** — No cross-boundary writes; escalate
-5. **Reality Check** — Done only with evidence matching `completion_gate`
+1. **Read before write.** Retrieve the work item before changing it.
+2. **Use the work item's project.** Resolve its `project_id`; never write it through another project.
+3. **Ask before creating or changing status.** A search result is not permission to modify it.
+4. **Read back writes.** Retrieve again after a create, update, or comment.
+5. **Do not mark Done on merge alone.** Require user confirmation that the work is released, or reliable deployment evidence.
 
-Details: [references/invariants.md](references/invariants.md)
+## Plane MCP
 
-## Lifecycle
+Use the official Plane MCP resource actions. Discover the available tools first; names may differ between MCP versions.
 
-**Work phases:** `discover → solution → tasks → execute → verify` — [work-phases.md](references/work-phases.md)
-
-**Plane states** (work item status):
-
-```text
-backlog/unstarted → started → review → completed
-```
-
-Plane state groups: `backlog` → `unstarted` → `started` → `completed` → `cancelled` (resolve the project state ID before writing)
-
-Work item ID regex: `\b[A-Z0-9]{1,5}-\d+\b`
-
-## Profiles
-
-| Profile | For | Traits |
-|---|---|---|
-| **minimal** | 1–2 people | Implicit plan, PR-ready review, no audit |
-| **standard** | Small teams | Risk-based plan, PR-ready review, summary audit |
-| **strict** | Enterprise | Explicit plan, user-acceptance review, detailed audit |
-
-Config: [configuration.md](configuration.md) · Schema: [references/configuration-schema.md](references/configuration-schema.md)
-
-## Optional: Execution Context
-
-`execution_context.mode`: `disabled` (default) | `auto` | `required`
-
-- **Layer 1 — Workflow Binding**: frozen governance on Plane (always for new work items)
-- **Layer 2 — Execution Context**: local `plan.md` / `findings.md` / `progress.md`
-
-When `disabled`, no Layer 2 files are created; newly bound work items still receive the minimal Layer 1 Workflow Binding.
-
-Protocol: [references/execution-context.md](references/execution-context.md)
-
-## Optional: Collaboration Lite
-
-For a personal/small-project Work item that needs a few bounded local workstreams, use opt-in collaboration-lite. It keeps Plane authority and lifecycle semantics unchanged. Reference: [references/collaboration.md](references/collaboration.md) · packet: [templates/task-packet.md](templates/task-packet.md).
-
-## Agent Brief
-
-At handoff points (start, progress, pause, review, done), post a second-person **Agent Brief** comment so the next Agent session can pick up quickly. Independent of audit comments; no extra config. See [references/agent-brief.md](references/agent-brief.md).
-
-## Quick Start
-
-| Step | User says | Agent does |
-|---|---|---|
-| Discover | "Create dark mode feature" | Clarify, create work item, return ID |
-| Start | "Start ABC-123" | Discover → solution → tasks → confirm → execute → `started` |
-| Implement | "Pushed changes" | Verify: PR + CI → review (per `review_gate`) |
-| Done | "Mark ABC-123 done" | Verify: release/deploy evidence → `completed` |
-
-```yaml
-# plane-workflow.config.yaml (optional; default profile: standard)
-version: 1
-profile: standard
-```
-
-Diagnose: `plane-workflow config diagnose`
-
-## Reference Files
-
-Load only when needed:
-
-| File | When |
+| Need | Typical call |
 |---|---|
-| [invariants.md](references/invariants.md) | Invariant details |
-| [configuration-schema.md](references/configuration-schema.md) | Config / profiles |
-| [capability-discovery.md](references/capability-discovery.md) | First Plane op in session |
-| [execution-context.md](references/execution-context.md) | Layer 1 + 2 protocol |
-| [collaboration.md](references/collaboration.md) | Optional small-project workstreams |
-| [workflow-binding.md](references/workflow-binding.md) | Binding read/write/read-back |
-| [work-phases.md](references/work-phases.md) | 5-phase resolve flow |
-| [workitem-discovery.md](references/workitem-discovery.md) | Discover: browse / create / query |
-| [start-implementation.md](references/start-implementation.md) | Solution, tasks, execute, verify |
-| [move-to-review.md](references/move-to-review.md) | Move to Review |
-| [agent-brief.md](references/agent-brief.md) | Agent handoff comments |
-| [output-contracts.md](references/output-contracts.md) | Errors, idempotency |
-| [project-scope.md](references/project-scope.md) | Scope boundaries |
-| [resume-work.md](references/resume-work.md) | Resume interrupted work |
-| [mark-done.md](mark-done.md) | Mark Done (standalone) |
-| [templates/](templates/) | Work item and local coordination templates |
+| Find work | `workitem(action="search", query=...)` |
+| Read by ID | `workitem(action="retrieve_by_identifier", workitem_identifier="PROJ-12")` |
+| List project states | `state(action="list", project_id=...)` |
+| Create | `workitem(action="create", project_id=..., name=...)` |
+| Change status | `workitem(action="update", project_id=..., workitem_id=..., state=<state-id>)` |
+| Comment | `workitem_comment(action="create", project_id=..., workitem_id=..., comment_html=...)` |
 
-## Transitions
+State names are for display only. Resolve a state ID from the selected project's states before updating.
 
-| State | Action | Evidence |
-|---|---|---|
-| `backlog` / `unstarted` | → `started` | User confirms start (per profile) |
-| `started` (impl) | → review | PR ready or user verified (per `review_gate`) |
-| `started` (review) | → `completed` | Per `completion_gate` |
-| `completed` / `cancelled` | — | Reopen only on explicit request |
+## Flow
 
-## Escalations
+1. **Discover** — search or read work items; read-only by default.
+2. **Plan** — summarize the goal, affected files, approach, and checks. Ask for confirmation when scope is unclear or risky.
+3. **Start** — retrieve the item and project states, select the project's started state, update it, then read it back.
+4. **Implement** — make the change, run relevant checks, and report results honestly.
+5. **Review** — when a PR is ready and checks pass, optionally move to a project state named “Review” if one exists. If no such state exists, report readiness without inventing one.
+6. **Done** — follow [mark-done.md](mark-done.md).
 
-- Ambiguous state → ask user
-- Cross-project write → stop; resolve the work item’s own `project_id`
-- Missing capability → report; don't simulate
-- Timeout → re-read before retry
-- Already in target state → skip
-- Invariant violation → report which one; stop
+## Minimal templates
 
-## Errors
+Use a template only when creating a work item:
 
-Report: what happened · why · suggested action. Format: [output-contracts.md](references/output-contracts.md)
+- [Idea / feature](templates/idea-feature.md)
+- [Bug](templates/bug-report.md)
+- [Refactor](templates/refactor.md)
 
----
+## Status groups
 
-**Version**: 0.1.0 · **Profiles**: minimal, standard, strict
+Plane state groups include `backlog`, `unstarted`, `started`, `completed`, and `cancelled`. A project can name its states however it wants; use the discovered state ID.

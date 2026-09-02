@@ -1,7 +1,4 @@
-# Generated host runtime copy of the skill.
-# Single source of truth is plane-workflow/; this is produced by `npm run sync:forge`.
-.forge/skills/plane-workflow/
-
-# Build artifacts
-dist/
+# Local dependencies and generated artifacts
 node_modules/
+dist/
+.forge/

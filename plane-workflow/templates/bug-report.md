@@ -1,10 +1,10 @@
-# Bug Report
+# Bug
 
-Use when existing behavior differs from the documented or expected result.
+**Expected:**
 
-- Summary:
-- Expected behavior:
-- Actual behavior:
-- Reproduction or evidence:
-- Impact (include any unintended Plane writes or incorrect success claims):
-- Acceptance criteria and regression verification:
+**Actual:**
+
+**How to reproduce:**
+
+**Acceptance checks:**
+- [ ]
