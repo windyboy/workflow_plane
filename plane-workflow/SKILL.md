@@ -43,15 +43,15 @@ State names are for display only. Resolve a state ID from the selected project's
 
 If requirements are unclear, checks fail, an MCP operation fails, or the target state is missing or ambiguous, keep the current state. Report the blocking reason and the suggested next step; do not guess, create a state, or retry a timed-out write without reading the work item again.
 
-## Optional cross-agent review
+## Manual cross-agent review
 
-For a plan, task list, or completed change that would benefit from a second look, use one independent reviewer:
+Run cross-agent review only when the user explicitly requests it. Do not trigger a reviewer automatically because a task is risky, a PR is ready, implementation finished, or the primary agent believes a second look would help. When manually requested, use one independent reviewer:
 
 - **Primary agent** owns the plan, implementation, verification, and every Plane write.
 - **Reviewer agent** is read-only: inspect the proposed plan, task, or change; return findings, risks, and a recommendation. It must not update Plane, create tasks, change status, or overwrite the primary agent's work.
 - **Primary agent** records each finding as adopted or declined with a short reason in an authorized Plane work-item comment (then reads it back), or in the final report when no Plane item exists. Escalate a high-risk or unresolved disagreement to the user.
 
-This is optional for simple changes. It is a documentation-level review protocol only: do not add task leases, execution context, release coordination, extra configuration, or automatic agent dispatch.
+This is a user-triggered, documentation-level review protocol only. It does not block simple changes unless the user requests review; do not add task leases, execution context, release coordination, extra configuration, or automatic agent dispatch.
 
 ## Minimal templates
 
