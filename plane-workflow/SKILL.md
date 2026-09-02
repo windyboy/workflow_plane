@@ -36,7 +36,7 @@ State names are for display only. Resolve a state ID from the selected project's
 2. **Plan** — summarize the goal, affected files, approach, and checks. Ask for confirmation when scope is unclear or risky.
 3. **Start** — retrieve the item and project states, select the project's started state, update it, then read it back.
 4. **Implement** — make the change, run relevant checks, and report results honestly.
-5. **Review** — when a PR is ready and checks pass, optionally move to a project state named “Review” if one exists. If no such state exists, report readiness without inventing one.
+5. **Review** — a ready PR and passing checks mean only that the work is ready for review; never move it automatically. Move it only when the user explicitly requests Review and the selected project has exactly one Review candidate resolved from its states. If Review is missing or ambiguous, report readiness and the blocking reason without writing or creating a state.
 6. **Done** — follow [mark-done.md](mark-done.md).
 
 ## Blocked or ambiguous work
