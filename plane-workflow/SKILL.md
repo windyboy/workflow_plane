@@ -49,7 +49,7 @@ For a plan, task list, or completed change that would benefit from a second look
 
 - **Primary agent** owns the plan, implementation, verification, and every Plane write.
 - **Reviewer agent** is read-only: inspect the proposed plan, task, or change; return findings, risks, and a recommendation. It must not update Plane, create tasks, change status, or overwrite the primary agent's work.
-- **Primary agent** records each finding as adopted or declined with a short reason in the relevant Plane work-item comment (then reads it back), or in the final report when no Plane item exists. Escalate a high-risk or unresolved disagreement to the user.
+- **Primary agent** records each finding as adopted or declined with a short reason in an authorized Plane work-item comment (then reads it back), or in the final report when no Plane item exists. Escalate a high-risk or unresolved disagreement to the user.
 
 This is optional for simple changes. It is a documentation-level review protocol only: do not add task leases, execution context, release coordination, extra configuration, or automatic agent dispatch.
 
