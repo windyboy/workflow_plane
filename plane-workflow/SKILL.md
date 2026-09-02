@@ -11,7 +11,7 @@ A small, evidence-based workflow for one developer or a small project.
 
 1. **Read before write.** Retrieve the work item before changing it.
 2. **Use the work item's project.** Resolve its `project_id`; never write it through another project.
-3. **Ask before creating or changing status.** A search result is not permission to modify it.
+3. **Use explicit instruction as authorization.** A user instruction that names a work item and requested action or status authorizes that one write. Ask only when the request, work item, or target state is ambiguous; a search result is not authorization.
 4. **Read back writes.** Retrieve again after a create, update, or comment.
 5. **Do not mark Done on merge alone.** Require user confirmation that the work is released, or reliable deployment evidence.
 
@@ -38,6 +38,10 @@ State names are for display only. Resolve a state ID from the selected project's
 4. **Implement** — make the change, run relevant checks, and report results honestly.
 5. **Review** — when a PR is ready and checks pass, optionally move to a project state named “Review” if one exists. If no such state exists, report readiness without inventing one.
 6. **Done** — follow [mark-done.md](mark-done.md).
+
+## Blocked or ambiguous work
+
+If requirements are unclear, checks fail, an MCP operation fails, or the target state is missing or ambiguous, keep the current state. Report the blocking reason and the suggested next step; do not guess, create a state, or retry a timed-out write without reading the work item again.
 
 ## Minimal templates
 
