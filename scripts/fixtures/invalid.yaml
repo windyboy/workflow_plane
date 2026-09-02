@@ -1,0 +1,3 @@
+version: 1
+profile: not_a_real_profile_with_a_typo
+overrides: this line has no colon so the parser must fail closed

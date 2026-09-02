@@ -1,0 +1,34 @@
+{
+  "version": "0.1.0",
+  "bin": {
+    "plane-workflow": "./scripts/diagnose.mjs"
+  },
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "test": "node scripts/behavior.test.mjs",
+    "test:profile": "node scripts/profile-behavior.test.mjs",
+    "test:cli": "node scripts/cli.test.mjs",
+    "test:schema": "node scripts/schema-validate.test.mjs",
+    "test:phase0": "node scripts/phase0.test.mjs",
+    "test:config": "node scripts/config-execution-context.test.mjs",
+    "test:binding": "node scripts/workflow-binding.test.mjs",
+    "test:context": "node scripts/execution-context.test.mjs",
+    "test:all": "npm run test && npm run test:profile && npm run test:cli && npm run test:schema && npm run test:phase0 && npm run test:config && npm run test:binding && npm run test:context",
+    "sync:forge": "node scripts/sync-forge.mjs",
+    "verify:forge": "node scripts/sync-forge.mjs --check",
+    "sync:schema": "node scripts/generate-schema.mjs",
+    "verify:schema": "node scripts/generate-schema.mjs --check",
+    "package": "npm run sync:forge && node scripts/package.mjs",
+    "install-verify": "node scripts/install-verify.mjs",
+    "ci": "npm run package && npm run install-verify && npm run test:all && npm run validate"
+  },
+  "dependencies": {
+    "gitnexus": "^1.6.9"
+  },
+  "trustedDependencies": [
+    "@ladybugdb/core"
+  ],
+  "devDependencies": {
+    "ajv": "^8.20.0"
+  }
+}

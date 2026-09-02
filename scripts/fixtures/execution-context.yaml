@@ -1,0 +1,6 @@
+version: 1
+profile: standard
+execution_context:
+  mode: required
+  root: .agent-work
+  format: execution_context_v1
