@@ -32,11 +32,11 @@ Use the Plane MCP server's dedicated tools. Tool names can differ between MCP ve
 | Add dependency | `create_work_item_relation(project_id=..., work_item_id=..., work_item_ids=[...], relation_type="blocked_by")` |
 | Read dependencies | `list_work_item_relations(project_id=..., work_item_id=...)` |
 
-Set `priority`, `labels`, or `estimate_point` on a create or update only when the selected project actually uses them or the user names them. Express dependencies as relations (`create_work_item_relation`), not as prose in a description. `relation_type` accepts `blocking`, `blocked_by`, `duplicate`, `relates_to`, `start_before`, `start_after`, `finish_before`, or `finish_after`.
+Set `priority`, `labels`, `point`, or `estimate_point` on a create or update only when the selected project actually uses them or the user names them. Express dependencies as relations (`create_work_item_relation`), not as prose in a description. `relation_type` accepts `blocking`, `blocked_by`, `duplicate`, `relates_to`, `start_before`, `start_after`, `finish_before`, or `finish_after`.
 
 Read-only helpers for read-back and trails: `list_work_item_comments(project_id=..., work_item_id=...)`, `list_work_item_activities(project_id=..., work_item_id=...)`, and `retrieve_work_item(project_id=..., work_item_id=..., expand=...)`.
 
-Other tools (labels, assignees, archive, attachments, links, and page writes) exist on most servers; enumerate the available `plane` tools when you need them instead of assuming they are absent.
+For Plane Community Edition, `list_work_items` has no `pql` parameter and `count_work_items` is unavailable; use pagination plus `search_work_items` for discovery, then filter locally when needed. Page and archive tools may be absent unless the server was configured with its optional Plane app-session credentials; CE pages are project-scoped only, and CE does not support work-item-to-page links. Enumerate the available `plane` tools when you need an optional capability instead of assuming it is available.
 
 State names are for display only. Resolve a state ID from the selected project's states before updating.
 
@@ -44,7 +44,7 @@ State names are for display only. Resolve a state ID from the selected project's
 
 1. **Discover** — search or read work items; read-only by default. Before creating, follow Rules 6–7: resolve the landing state from `list_states`, and search first — pause and list candidates when an obvious same-target item exists.
 2. **Plan** — summarize the goal, affected files, approach, and checks. Ask for confirmation when scope is unclear or risky.
-3. **Start** — retrieve the item and project states, select the project's started state, update it, then read it back.
+3. **Start** — retrieve the item and project states, select exactly one `started`-group state, update it, then read it back. If none or more than one state qualifies, report the candidates and do not update.
 4. **Implement** — make the change, run relevant checks, and report results honestly.
 5. **Review** — readiness means the work is ready for review; it never authorizes moving it. Evidence depends on the kind of change: for code, a PR open with its relevant checks passing; for docs, config, or data, implementation complete with verification proportional to risk. Move to a Review state only when the user explicitly requests Review and the selected project has exactly one Review candidate resolved from its states. If Review is missing or ambiguous, report readiness and the blocking reason without writing or creating a state.
 6. **Done** — follow [mark-done.md](mark-done.md).
