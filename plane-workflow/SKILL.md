@@ -36,6 +36,8 @@ Set `priority`, `labels`, or `estimate_point` on a create or update only when th
 
 Read-only helpers for read-back and trails: `list_work_item_comments(project_id=..., work_item_id=...)`, `list_work_item_activities(project_id=..., work_item_id=...)`, and `retrieve_work_item(project_id=..., work_item_id=..., expand=...)`.
 
+Other tools (labels, assignees, archive, attachments, links, and page writes) exist on most servers; enumerate the available `plane` tools when you need them instead of assuming they are absent.
+
 State names are for display only. Resolve a state ID from the selected project's states before updating.
 
 ## Flow
